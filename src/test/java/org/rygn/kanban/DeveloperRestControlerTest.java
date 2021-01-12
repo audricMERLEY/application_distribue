@@ -49,11 +49,11 @@ public class DeveloperRestControlerTest {
         mockMvc.perform(get("/developers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(developers.size())))
-                .andExpect(jsonPath("$[0].id", Matchers.equalTo(developers.get(0).getId())))
+                .andExpect(jsonPath("$[0].id",Matchers.equalTo(developers.get(0).getId().intValue())))
                 .andExpect(jsonPath("$[0].firstname", Matchers.equalTo(developers.get(0).getFirstname())))
                 .andExpect(jsonPath("$[0].lastname", Matchers.equalTo(developers.get(0).getLastname())))
-                .andExpect(jsonPath("$[1].email", Matchers.equalTo(developers.get(0).getEmail())))
-                .andExpect(jsonPath("$[1].password", Matchers.equalTo(developers.get(0).getPassword())));
+                .andExpect(jsonPath("$[0].email", Matchers.equalTo(developers.get(0).getEmail())))
+                .andExpect(jsonPath("$[0].password", Matchers.equalTo(developers.get(0).getPassword())));
 
 
     }

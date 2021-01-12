@@ -68,7 +68,7 @@ public class TaskRestControlerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].title", is(this.taskRepository.findAll().get(0).getTitle())));
+                .andExpect(jsonPath("$.[0].id", is(this.taskRepository.findAll().get(0).getId().intValue())));
     }
 
     @Test
@@ -87,18 +87,18 @@ public class TaskRestControlerTest {
                 .content(asJsonString(task))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
 
         Collection<Task> taskList = this.taskService.findAllTasks();
 
         Boolean done = false;
         for(Task t : taskList){
-            if(t.getTitle() =="Task test"){
+            if(t.getTitle().equals("Task test")){
                 done = true;
                 break;
             }
         }
-        Assert.assertEquals(done,"Task wasn't added");
+        Assert.assertTrue("Task wasn't added",done);
     }
 }
