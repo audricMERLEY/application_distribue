@@ -1,7 +1,9 @@
 package org.rygn.kanban.controler;
 
 import org.rygn.kanban.domain.Task;
+import org.rygn.kanban.domain.TaskStatus;
 import org.rygn.kanban.service.TaskService;
+import org.rygn.kanban.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,17 +54,18 @@ public class TaskRestControler {
         }
     }
 
-    @PatchMapping(value = "/moveTask")
-    public ResponseEntity modifyTask(@RequestParam(name = "id") Long id,@RequestParam(name="toRight") Boolean toRight){
+    @PatchMapping(value = "/task/{id}")
+    public ResponseEntity modifyTask(@PathVariable Long id, @RequestBody TaskStatus taskStatus){
         Task task = this.taskService.findTask(id);
         if(task != null){
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();
-
-            if(toRight){
+            if(task.getStatus().getId() - taskStatus.getId() == -1){
                 task = this.taskService.moveRightTask(task);
-            }else {
+            }else if(task.getStatus().getId() - taskStatus.getId() == 1){
                 this.taskService.moveLeftTask(task);
+            }else{
+                return new ResponseEntity("Cannot move more than one column at the time",HttpStatus.BAD_REQUEST);
             }
 
             Set<ConstraintViolation<Task>> constraintViolations =validator.validate(task);
